@@ -1,89 +1,101 @@
-# Profile App — Manual DevOps Deployment Project
+# 🚀 Profile App — Manual DevOps Deployment Project
 
-This project is a hands-on DevOps deployment project built to practice real cloud and container workflows.
+A hands-on DevOps deployment project built to practice real-world containerization, cloud deployment, and Linux server workflows.
 
-Instead of focusing on building a complex application, I focused on understanding how applications move from local development to a live cloud server using Docker and AWS infrastructure.
+Instead of focusing on building a complex application, this project focuses on understanding how applications move from local development to a live production-like environment using Docker and AWS infrastructure.
 
-The project uses a Node.js application connected to MongoDB, containerized with Docker, stored in Amazon ECR, and deployed on an AWS EC2 instance using Docker Compose.
-
----
-
-# Technologies Used
-
-| Area        | Technologies           |
-| ----------- | ---------------------- |
-| Backend     | Node.js, Express       |
-| Database    | MongoDB                |
-| Containers  | Docker, Docker Compose |
-| Cloud       | AWS EC2, Amazon ECR    |
-| Tools       | Linux, Git             |
-| Database UI | CompassWeb             |
+The application is built with Node.js and MongoDB, containerized with Docker, stored in Amazon ECR, and deployed on an AWS EC2 instance using Docker Compose.
 
 ---
 
-# Why I Built This Project
+# 🏗️ Architecture Diagram
 
-I built this project to better understand:
-
-* Docker containerization
-* Multi-container deployments
-* Cloud deployment workflows
-* Docker image registries
-* Linux server management
-* AWS infrastructure basics
-
-Before learning CI/CD tools like Jenkins or GitHub Actions, I wanted to first understand the manual deployment process behind the scenes.
+![Architecture Diagram](screenshots/architecture-diagram.png)
 
 ---
 
-# What the Application Does
+# 📌 Project Overview
 
-The application is a simple profile dashboard.
+This project demonstrates a complete manual DevOps deployment workflow:
 
-It allows users to:
-
-* View profile information
-* Update profile information
-* Store data inside MongoDB
-* Access the application through a clean web interface
+- Building Docker images locally
+- Managing multi-container applications
+- Pushing Docker images to Amazon ECR
+- Deploying containers on AWS EC2
+- Using Docker Compose for orchestration
+- Managing MongoDB persistence with Docker volumes
+- Configuring AWS Security Groups and IAM roles
 
 ---
 
-# Architecture Diagram
+# ⚙️ Technologies Used
 
-```mermaid id="6jzvtx"
-flowchart TD
+| Category | Technologies |
+|---|---|
+| Backend | Node.js, Express |
+| Database | MongoDB |
+| Containerization | Docker, Docker Compose |
+| Cloud Platform | AWS EC2, Amazon ECR |
+| DevOps Tools | Linux, Git |
+| Database UI | CompassWeb |
 
-    A[Local Development Machine]
+---
 
-    A -->|Build Docker Image| B[Docker Image]
+# 🎯 Why I Built This Project
 
-    B -->|Push Image| C[Amazon ECR]
+I built this project to strengthen my understanding of:
 
-    C -->|Pull Image| D[AWS EC2 Server]
+- Docker containerization
+- Multi-container deployments
+- AWS cloud deployment workflows
+- Linux server administration
+- Docker networking
+- Docker image registries
+- Infrastructure fundamentals
 
-    D -->|Run Docker Compose| E[Application Stack]
+Before learning CI/CD automation tools like Jenkins or GitHub Actions, I wanted to first understand how deployments work manually behind the scenes.
 
-    E --> F[Node.js Application]
+---
 
-    E --> G[MongoDB Database]
+# 🖥️ Application Features
 
-    E --> H[CompassWeb UI]
+The application is a simple profile dashboard that allows users to:
 
-    G --> I[Persistent Docker Volume]
+- View profile information
+- Update profile data
+- Store information inside MongoDB
+- Access the application through a clean responsive UI
+
+---
+
+# 🌐 Application Routes
+
+```text
+GET  /
+GET  /profile-picture
+GET  /get-profile
+POST /update-profile
 ```
 
+---
 
-# Project Structure
+# 📂 Project Structure
 
-```text id="2k57ca"
+```text
 profile-devops-project/
 │
 ├── application/
 │   ├── index.html
 │   ├── server.js
 │   ├── package.json
-│   ├── images/
+│   ├── package-lock.json
+│   └── images/
+│
+├── screenshots/
+│   ├── architecture-diagram.png
+│   ├── ec2-security-group.png
+│   ├── iam-ecr-role.jpg
+│   └── running-application.png
 │
 ├── Dockerfile
 ├── docker-compose.example.yml
@@ -94,38 +106,122 @@ profile-devops-project/
 
 ---
 
-# Docker Services
+# 🐳 Docker Services
 
-| Service    | Purpose                      |
-| ---------- | ---------------------------- |
-| my-app     | Runs the Node.js application |
-| mongodb    | Stores application data      |
-| CompassWeb | MongoDB web interface        |
-| mongo-data | Persistent database storage  |
-
----
-
-# What I Learned
-
-This project helped me practice:
-
-* Linux server administration
-* Docker containerization
-* Docker Compose orchestration
-* Amazon ECR workflows
-* AWS EC2 deployment
-* MongoDB persistence
-* Container networking
-* Environment variable configuration
-
-Most importantly, it helped me understand how real deployments work before introducing automation tools.
+| Service | Purpose |
+|---|---|
+| my-app | Runs the Node.js application |
+| mongodb | Stores application data |
+| CompassWeb | MongoDB web interface |
+| mongo-data | Persistent Docker volume for MongoDB |
 
 ---
 
-# Future Improvements
+# 🔄 Deployment Workflow
+
+## 1. Build Docker Image
+
+```bash
+docker build -t my-application:1.0 .
+```
+
+---
+
+## 2. Tag Docker Image
+
+```bash
+docker tag my-application:1.0 <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/my-application:1.0
+```
+
+---
+
+## 3. Push Docker Image to Amazon ECR
+
+```bash
+docker push <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/my-application:1.0
+```
+
+---
+
+## 4. Connect to AWS EC2
+
+```bash
+ssh -i my-key.pem ubuntu@<EC2_PUBLIC_IP>
+```
+
+---
+
+## 5. Authenticate Docker with Amazon ECR
+
+```bash
+aws ecr get-login-password --region <AWS_REGION> | sudo docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com
+```
+
+---
+
+## 6. Deploy Containers with Docker Compose
+
+```bash
+sudo docker compose up -d
+```
+
+---
+
+# 📸 Project Screenshots
+
+## AWS EC2 Security Group Configuration
+
+![EC2 Security Group](screenshots/ec2-security-group.png)
+
+---
+
+## IAM Role Configuration for Amazon ECR Access
+
+![IAM Role](screenshots/iam-ecr-role.jpg)
+
+---
+
+## Running Application & Docker Containers
+
+![Running Application](screenshots/running-application.png)
+
+---
+
+# 📚 What I Learned
+
+This project helped me practice and understand:
+
+- Linux server management
+- Docker image creation
+- Docker Compose orchestration
+- Amazon ECR workflows
+- AWS EC2 deployment
+- MongoDB persistence
+- Container networking
+- Environment variable management
+- Manual DevOps deployment processes
+
+Most importantly, this project helped me understand how real deployments work before introducing CI/CD automation.
+
+---
+
+# 🚀 Future Improvements
 
 Next, I plan to expand this project with:
 
-* Jenkins CI/CD
-* GitHub Actions
+- Jenkins CI/CD Pipelines
+- GitHub Actions Automation
+- Nginx Reverse Proxy
+- HTTPS & SSL Configuration
+- Kubernetes Deployment
+- Terraform Infrastructure as Code
+- Monitoring & Logging
 
+---
+
+# 👨‍💻 Author
+
+### Jules Munyaneza
+
+Manual DevOps Deployment Portfolio Project  
+Built for learning, practice, and DevOps engineering growth.
