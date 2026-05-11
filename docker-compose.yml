@@ -1,0 +1,72 @@
+
+services:
+
+
+  my-app:
+
+    image: <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/<IMAGE_NAME>:<IMAGE_TAG>
+
+   
+    ports:
+      - "3000:3000"
+
+    environment:
+
+
+
+      MONGO_URL: mongodb://<MONGO_USERNAME>:<MONGO_PASSWORD>@mongodb:27017/<DATABASE_NAME>?authSource=admin
+
+
+
+    depends_on:
+      - mongodb
+
+    
+    restart: always
+
+
+
+  mongodb:
+    
+    image: mongo:7
+
+   
+    ports:
+      - "27017:27017"
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: <MONGO_USERNAME>
+      MONGO_INITDB_ROOT_PASSWORD: <MONGO_PASSWORD>
+
+    volumes:
+      - mongo-data:/data/db
+
+    restart: always
+
+
+  CompassWeb:
+  
+    image: haohanyang/compass-web
+
+    ports:
+      - "3001:8080"
+
+
+    environment:
+
+      CW_MONGO_URI: mongodb://<MONGO_USERNAME>:<MONGO_PASSWORD>@mongodb:27017/admin
+
+    # Start mongodb before starting CompassWeb
+    depends_on:
+      - mongodb
+
+    # Automatically restart CompassWeb if it stops
+    restart: always
+
+
+# Define named Docker volumes used by services
+volumes:
+
+  # Docker-managed volume for MongoDB data persistence
+  mongo-data:
+    driver: local
