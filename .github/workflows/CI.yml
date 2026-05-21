@@ -1,4 +1,4 @@
-name: complete CI/CD Pipeline DEPLOYMENT ON EC2
+name: complete CI/CD Pipeline DEPLOYMENT ON AWS EC2
 
 on:
   push:
