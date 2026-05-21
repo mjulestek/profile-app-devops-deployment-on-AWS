@@ -19,6 +19,7 @@ jobs:
           node-version: 16
           
       - name: Install dependencies
+        working-directory: application
         run: npm install
 
       - name: Log in to DockerHub
