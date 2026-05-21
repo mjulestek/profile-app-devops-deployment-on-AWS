@@ -4,8 +4,10 @@ services:
 
   my-app:
 
-    image: <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/<IMAGE_NAME>:<IMAGE_TAG>
-
+#    image: <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/<IMAGE_NAME>:<IMAGE_TAG>
+    build:
+      context: .
+      dockerfile: Dockerfile
    
     ports:
       - "3000:3000"
@@ -14,7 +16,7 @@ services:
 
 
 
-      MONGO_URL: mongodb://<MONGO_USERNAME>:<MONGO_PASSWORD>@mongodb:27017/<DATABASE_NAME>?authSource=admin
+      MONGO_URL: mongodb://mujuules01:Password123@mongodb:27017/<DATABASE_NAME>?authSource=admin
 
 
 
@@ -35,8 +37,8 @@ services:
       - "27017:27017"
 
     environment:
-      MONGO_INITDB_ROOT_USERNAME: <MONGO_USERNAME>
-      MONGO_INITDB_ROOT_PASSWORD: <MONGO_PASSWORD>
+      MONGO_INITDB_ROOT_USERNAME: mujuules01
+      MONGO_INITDB_ROOT_PASSWORD: Password123
 
     volumes:
       - mongo-data:/data/db
@@ -54,7 +56,7 @@ services:
 
     environment:
 
-      CW_MONGO_URI: mongodb://<MONGO_USERNAME>:<MONGO_PASSWORD>@mongodb:27017/admin
+      CW_MONGO_URI: mongodb://mujuules01:Password123@mongodb:27017/admin
 
     # Start mongodb before starting CompassWeb
     depends_on:
