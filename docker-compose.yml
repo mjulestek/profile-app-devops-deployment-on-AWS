@@ -1,74 +1,19 @@
-
 services:
-
-
-  my-app:
-
-#    image: <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/<IMAGE_NAME>:<IMAGE_TAG>
-    build:
-      context: .
-      dockerfile: Dockerfile
-   
+  app:
+    image: mjulestek/profile-app:1.1
     ports:
       - "3000:3000"
-
-    environment:
-
-
-
-      MONGO_URL: mongodb://mujuules01:Password123@mongodb:27017/<DATABASE_NAME>?authSource=admin
-
-
-
     depends_on:
-      - mongodb
+      - postgres
 
-    
-    restart: always
-
-
-
-  mongodb:
-    
-    image: mongo:7
-
-   
+  postgres:
+    image: postgres:16
     ports:
-      - "27017:27017"
-
+      - "5432:5432"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mujuules01
-      MONGO_INITDB_ROOT_PASSWORD: Password123
+      POSTGRES_DB: mydb
+      POSTGRES_USER: mjulestek
+      POSTGRES_PASSWORD: password123
 
-    volumes:
-      - mongo-data:/data/db
-
-    restart: always
-
-
-  CompassWeb:
-  
-    image: haohanyang/compass-web
-
-    ports:
-      - "3001:8080"
-
-
-    environment:
-
-      CW_MONGO_URI: mongodb://mujuules01:Password123@mongodb:27017/admin
-
-    # Start mongodb before starting CompassWeb
-    depends_on:
-      - mongodb
-
-    # Automatically restart CompassWeb if it stops
-    restart: always
-
-
-# Define named Docker volumes used by services
 volumes:
-
-  # Docker-managed volume for MongoDB data persistence
-  mongo-data:
-    driver: local
+  postgres-data:
