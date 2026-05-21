@@ -1,39 +1,60 @@
 name: Complete CI/CD Pipeline Deployment on AWS EC2
 
+# Trigger workflow whenever code is pushed to main branch
 on:
   push:
     branches:
       - main
 
 jobs:
+
+  # One job that handles build + push + deployment
   build-and-deploy:
+
+    # Create temporary Ubuntu GitHub runner
     runs-on: ubuntu-latest
 
     steps:
+
+      # Download GitHub repository code onto runner
       - name: Connect to my GitHub repository codebase
         uses: actions/checkout@v4
 
+      # Install Node.js version 20 on GitHub runner
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # Install Node dependencies from package.json
+      # Equivalent:
+      # cd application
+      # npm install
       - name: Install all dependencies
         working-directory: application
         run: npm install
 
+      # Authenticate Docker on GitHub runner
+      # Needed so docker push can access private DockerHub repo
       - name: Log in to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # Build Docker image from Dockerfile
+      # Result:
+      # mjulestek/profile-app:1.1
       - name: Build the Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/profile-app:1.1 .
 
+      # Upload image to DockerHub
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/profile-app:1.1
 
+      # Copy docker-compose.yml from GitHub runner to EC2
+      # Similar to:
+      # scp docker-compose.yml ubuntu@server:/home/ubuntu/profile-app
       - name: Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -43,6 +64,7 @@ jobs:
           source: "docker-compose.yml"
           target: "/home/${{ secrets.EC2_USER }}/profile-app"
 
+      # SSH into EC2 and deploy application
       - name: Deploy to EC2 with Docker Compose
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -50,14 +72,22 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+
+            # Stop script immediately if any command fails
             set -e
 
+            # Go where docker-compose.yml exists
             cd /home/${{ secrets.EC2_USER }}/profile-app
 
+            # Login on EC2 because EC2 must pull private image
+            # GitHub login and EC2 login are different machines
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
+            # Pull newest image from DockerHub
             docker compose -f docker-compose.yml pull
 
+            # Start or recreate app + postgres containers
             docker compose -f docker-compose.yml up -d
 
+            # Remove unused Docker images to save EC2 disk space
             docker image prune -f
