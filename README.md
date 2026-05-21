@@ -1,3 +1,11 @@
+please update the Readme File.
+
+show case waht we did on this stage.
+
+
+make it super and be straight don't modify it's existing context:
+
+
 # 🚀 Profile App — Manual DevOps Deployment Project
 
 A hands-on DevOps deployment project built to practice real-world containerization, cloud deployment, and Linux server workflows.
