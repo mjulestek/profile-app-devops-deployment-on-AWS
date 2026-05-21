@@ -13,7 +13,7 @@ jobs:
       - name: Connect to my GitHub repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up the Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 16
