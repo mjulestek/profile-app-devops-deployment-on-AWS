@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Connect to my GitHub repository
+      - name: Connect to my GitHub repository(codebase)
         uses: actions/checkout@v4
 
       - name: Set up the Node.js
