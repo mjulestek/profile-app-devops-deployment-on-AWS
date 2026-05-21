@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: github CI Pipeline
 
 on:
   push:
@@ -13,15 +13,13 @@ jobs:
       - name: Connect to my GitHub repository(get the codebase)
         uses: actions/checkout@v4
 
-      - name: Install Java and Maven
-        uses: actions/setup-java@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          distribution: temurin
-          java-version: 17
-          cache: maven
-
-      - name: Build JAR
-        run: mvn clean package
+          node-version: 16
+          
+      - name: Install dependencies
+        run: npm install
 
       - name: Log in to DockerHub
         uses: docker/login-action@v3
